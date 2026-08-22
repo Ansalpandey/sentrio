@@ -40,17 +40,8 @@ export function Hero() {
                 size="lg"
                 className="gap-2"
                 onClick={() => {
-                  window.location.href = "/docs/core";
-                }}
-              >
-                Get Started
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2"
-                onClick={() => {
-                  window.location.href = "https://github.com/usesentrio/sentrio";
+                  window.location.href =
+                    "https://github.com/Ansalpandey/sentrio";
                 }}
               >
                 <GithubIcon className="h-4 w-4" />
