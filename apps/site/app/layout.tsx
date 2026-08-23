@@ -105,44 +105,48 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: This is necessary to apply the user's preferred color scheme before React hydration to prevent a flash of incorrect theme.
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var media = window.matchMedia('(prefers-color-scheme: dark)');
-                  function applyTheme(isDark) {
-                    document.documentElement.classList.toggle('dark', isDark);
-                    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-                  }
-                  applyTheme(media.matches);
-                  if (media.addEventListener) {
-                    media.addEventListener('change', function(e) { applyTheme(e.matches); });
-                  } else if (media.addListener) {
-                    media.addListener(function(e) { applyTheme(e.matches); });
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
+        {/* Replaced raw <script> with Next.js <Script> component */}
+        <Script id="theme-initializer" strategy="beforeInteractive">
+          {`
+            (function() {
+              try {
+                var media = window.matchMedia('(prefers-color-scheme: dark)');
+                function applyTheme(isDark) {
+                  document.documentElement.classList.toggle('dark', isDark);
+                  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+                }
+                applyTheme(media.matches);
+                if (media.addEventListener) {
+                  media.addEventListener('change', function(e) { applyTheme(e.matches); });
+                } else if (media.addListener) {
+                  media.addListener(function(e) { applyTheme(e.matches); });
+                }
+              } catch (e) {}
+            })();
+          `}
+        </Script>
+
         {children}
-        <script
+
+        {/* Also replaced the JSON-LD <script> with Next.js <Script> */}
+        <Script
+          id="json-ld"
           type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data must be inlined as a script tag for search engines to parse.
+          strategy="beforeInteractive"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data must be inlined
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+
         <Script
+          id="plausible-script"
           defer
           data-domain="sentrio.ansalprojects.dpdns.org"
           src="https://plausible.sentrio.ansalprojects.dpdns.org/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
           strategy="afterInteractive"
         />
+
         <Script id="plausible-init" strategy="afterInteractive">
-          {
-            "window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }"
-          }
+          {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
         </Script>
       </body>
     </html>
